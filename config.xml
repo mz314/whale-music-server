@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <server daemon="yes">
+        <port>
+            6666
+        </port>
+        <log type="file">
+         <access>access_log</access>
+         <info>info_log</info>
+         <warning>info_log</warning>
+         <debug>debug_log</debug>
+        </log>
+    </server>
+    <working_dir><!-- temporary -->
+     /home/maciek/mp3
+    </working_dir>
+    <blocked_ips>
+      <ip>1.1.1.1</ip>
+    </blocked_ips>
+    <allowed_ips all="yes">
+    </allowed_ips>
+</config>

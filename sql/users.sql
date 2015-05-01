@@ -1,0 +1,1 @@
+create table users (id int not null primary key,username varchar(45) not null unique,password blob not null,root_path varchar(256));

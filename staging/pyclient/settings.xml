@@ -1,0 +1,9 @@
+<pyclient>
+ <settings>
+  <host>192.168.0.14</host>
+  <port>6543</port>
+  <username>maciek</username>
+  <pass>12345</pass>
+  <enqueue>1</enqueue>
+ </settings>
+</pyclient>

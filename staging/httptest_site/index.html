@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Http test</title>
+        <meta charset="UTF-8">
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="script.js"></script>
+    </head>
+    <body>
+        <form action="" id="httpform" method="POST">
+            <div>
+                Host: <input id="host" value="localhost" /><br />
+                Port: <input id="port" value="6666" /><br /> 
+            </div>
+            <div>
+                Command: <input name="command" />
+            </div>
+            <div>
+                <h2>Add param</h2>
+                Param name<input id="name" /><br />
+                Param value<input id="value" /><br />
+                <a id="add-param" href="#">Add</a><br /><br />
+            </div>
+
+            <div id="testinputs">
+            </div>
+            <a href="#" id="submit">Send</a>
+
+        </form>
+    </body>
+</html>
