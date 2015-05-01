@@ -24,13 +24,13 @@ install: all install_server
 server: server.o  user_manager.o  manager.o logs.o  user_state.o gstreamer_io.o xml.o playlist.o socketshtpp.o socketsabs.o responsexml.o httpFiles.o fileUtils.o database.o
 	g++ $^ `pkg-config --cflags --libs gstreamer-0.10` $(SERVER_LDFLAGS)  $(DB_LDFLAGS) -o $@
 
-fileUtils.o: fileUtils.cpp
+fileUtils.o: src/fileUtils.cpp
 	g++  `pkg-config --cflags --libs gstreamer-0.10` -o $@  $(CFLAGS) -c $^
 
-httpFiles.o: httpFiles.cpp
+httpFiles.o: src/httpFiles.cpp
 	g++  `pkg-config --cflags --libs gstreamer-0.10` -o $@  $(CFLAGS) -c $^
 
-heavy_test: heavy_test.cpp heavy.o
+heavy_test: src/heavy_test.cpp heavy.o
 	g++ $^ $(ALSA_LDFLAGS) -o $@
 
 #heavy_test.o: heavy_test.cpp heavy.o
@@ -40,20 +40,20 @@ heavy_test: heavy_test.cpp heavy.o
 #	g++  -o $@  $(CFLAGS)  -c $^
 
 
-user_manager.o: user_manager.cpp 
+user_manager.o: src/user_manager.cpp 
 	g++  `pkg-config --cflags --libs gstreamer-0.10` -o $@  $(CFLAGS) -c $^
 
-server.o: musicserver.cpp 
+server.o: src/musicserver.cpp 
 	g++  -c $^ `pkg-config --cflags --libs gstreamer-0.10`  -o $@  $(CFLAGS)   
 
-manager.o: server_manager.cpp
+manager.o: src/server_manager.cpp
 	g++  `pkg-config --cflags --libs gstreamer-0.10` -o $@  $(CFLAGS) -c $^
 
 
 #sockets.o: sockets.cpp 
 #	g++   `pkg-config --cflags --libs gstreamer-0.10`  -o $@  $(CFLAGS) -c $^
 
-logs.o: logs.cpp
+logs.o: src/logs.cpp
 	g++  -o $@  $(CFLAGS) -c $^
 
 #logsh.o: logs.h 
@@ -63,29 +63,29 @@ logs.o: logs.cpp
 #	g++  -o $@  $(CFLAGS)  -c $^
 
 
-database.o: database.cpp
+database.o: src/database.cpp
 	g++  -o $@  $(CFLAGS)  -c $^
 
-user_state.o: user_state.cpp
+user_state.o: src/user_state.cpp
 	g++  -o $@  $(CFLAGS)  -c $^
 
 
-gstreamer_io.o: gstreamer_io.cpp
+gstreamer_io.o: src/gstreamer_io.cpp
 	g++  -o $@  `pkg-config --cflags --libs gstreamer-0.10` $(CFLAGS)  -c $^
 
 
-#xml.o: xml.cpp
-#	g++  -o $@  $(CFLAGS)  -c $^
-
-
-playlist.o: playlist.cpp
+xml.o: src/xml.cpp
 	g++  -o $@  $(CFLAGS)  -c $^
 
 
-socketsabs.o: sockets_abstract.cpp
+playlist.o: src/playlist.cpp
+	g++  -o $@  $(CFLAGS)  -c $^
+
+
+socketsabs.o: src/sockets_abstract.cpp
 	g++  `pkg-config --cflags --libs gstreamer-0.10` -o $@  $(CFLAGS)  -c $^
 	
-socketshtpp.o: sockets_http.cpp
+socketshtpp.o: src/sockets_http.cpp
 	g++  `pkg-config --cflags --libs gstreamer-0.10` -o $@  $(CFLAGS)  -c $^
 
 
@@ -98,13 +98,13 @@ socketshtpp.o: sockets_http.cpp
 resptest: responsetest.o responsexml.o  gstreamer_io.o user_state.o user_manager.o logs.o
 	g++ $^  $(SERVER_LDFLAGS) `pkg-config --cflags --libs gstreamer-0.10` -o $@
 
-responsetest.o: resptest.cpp  gstreamer_io.o
+responsetest.o: src/resptest.cpp  gstreamer_io.o
 	g++  -o $@  $(CFLAGS) $(SERVER_LDFLAGS) `pkg-config --cflags --libs gstreamer-0.10`  -c $^
 
-responseabs.o: responseAbstract.cpp
+responseabs.o: src/responseAbstract.cpp
 	g++  -o $@  $(CFLAGS)  -c $^
 
-responsexml.o: responseXML.cpp 
+responsexml.o: src/responseXML.cpp 
 	g++  -o $@  $(CFLAGS)   -c $^
 
 clean:  
