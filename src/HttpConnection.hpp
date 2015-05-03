@@ -6,6 +6,7 @@
 #include <cstring>
 #include <algorithm>
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
@@ -59,8 +60,9 @@ using namespace std;using boost::asio::ip::tcp;
 class HttpConnection {
 protected:
     reqParams post, get, request;
+    vector <string> url_segments;
     chunkedRange range;
-    string method, url;
+    string method, url,command;
     user_state * user;
     bool keepalive;
     void dumpRequest(clientReqData &req);

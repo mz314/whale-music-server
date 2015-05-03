@@ -90,6 +90,7 @@ void HttpConnection::parseRequest(const clientReqData &req) {
     get = parseParams(getstr);
     post = parseParams(poststr);
     this->url = url.substr(2, getpos - 2);
+    boost::split(url_segments, url.erase(0,2), boost::is_any_of("/"));
     log->message(this->url);
     request.clear();
     request.insert(get.begin(), get.end());
@@ -106,10 +107,6 @@ clientReqData HttpConnection::getRequest() {
     ret.length = this->socket->read_some(boost::asio::buffer(ret.data), error);
     return ret;
 }
-
-//void connection_http::sendResponse(const string &content, char *content_type = "text/plain", int code = 200) {
-//    this->sendResponse(content.c_str(),content_type,code);
-//}
 
 void HttpConnection::sendResponse(const char *content, const char *content_type, string status) {
     char * format = "\
@@ -155,15 +152,10 @@ void HttpConnection::processDownload(bool chunked,string file_name) {
 
     //    log->message(ext);
     
-    string fn;
-    if (file_name!="") {
-        fn="/home/maciek/"+file_name;
-    } else {
-        fn=this->url;
-    }
-    cout << fn << endl;
+   
+   
     try {
-        file = new httpFile(fn);
+        file = new httpFile(file_name);
     } catch (string s) {
         sendResponse("404", "text/plain", "404 Not found");
         //free(file);
@@ -174,14 +166,14 @@ void HttpConnection::processDownload(bool chunked,string file_name) {
     bs = file->readFile();
     string mime = file->getMime();
     
-    if (chunked) {
-        sendChunkedResponse(bs, mime.c_str());
-    } else {
+//    if (chunked) {
+//        sendChunkedResponse(bs, mime.c_str());
+//    } else {
     
         //cout << strlen(bs) << endl;
         sendResponse(bs, mime.c_str());
         //cout << "response" << endl;
-    }
+//    }
 }
 
 bool HttpConnection::processRequest() {
@@ -195,9 +187,12 @@ bool HttpConnection::processRequest() {
     if (request["json"] == "yes") {
         resp.setJson(true);
     }
-    string command = request["command"];
-    if (command != "") {
-        if (command == "test") {
+    string command = url_segments[0]; //request["command"];
+     log->message(">>"+string(command)+"<<", INFO);
+    if (command != " ") {
+        if (command == "file") {
+            processDownload(false,url_segments[1]);
+        } if (command == "test") {
             sendResponse(resp);
         } else if (command == "listdir") {
             log->message(string(request["dir"]));
@@ -208,7 +203,7 @@ bool HttpConnection::processRequest() {
                 resp.setCode("1");
                 resp.content("No such directory");
             }
-            resp.appendXSL("xsl/dir.xsl");
+            resp.appendXSL("/file/xsl/dir.xsl");
             sendResponse(resp, "text/xml");
 
         } else if (command == "stream") {
@@ -229,11 +224,9 @@ bool HttpConnection::processRequest() {
                 io->stop_playback();
             playlist_type *p = manager->get_playlist();
             p->clear();
-
             manager->enqueue(file);
             io->set_playlist(manager->get_playlist());
             io->play();
-
             sendResponse(file.c_str());
         } else if (command == "enqueue") {
             string file = post["file"];
@@ -252,7 +245,6 @@ bool HttpConnection::processRequest() {
             log->message(msg, INFO);
             string playlist = make_xml_playlist(*manager->get_playlist());
             sendResponse(playlist.c_str());
-            //send_response(RESPONSE_PLAYLIST, make_xml_playlist(*manager->get_playlist()));
         } else if (command == "current") {
             string current = io->get_current();
             resp.content(current);
@@ -261,6 +253,7 @@ bool HttpConnection::processRequest() {
             sendResponse(command.c_str());
         }
     } else {
+        sendResponse("No command");
         return false;
     }
     //free(resp);
@@ -277,23 +270,25 @@ void HttpConnection::operator()() {
 
         // cout << n << endl;
 
+        
         req = this->getRequest();
-        if (strlen(req.data) == 0)
-            break;
+//        if (strlen(req.data) == 0)
+//            break;
         //this->dumpRequest(req);
         parseRequest(req);
         log->message(url);
-
-        if (url == "") {
-            if (!processRequest()) {
-                sendResponse("No command");
-            }
-        } else if (url == "stream") {
-            //sendResponse("Stream");
-            processDownload(true);
-        } else {
-            processDownload();
-        }
+        processRequest();
+         //sendResponse("No command");
+//        if (url == "") {
+//            if (!processRequest()) {
+//               
+//            }
+//        } else if (url == "stream") {
+//            //sendResponse("Stream");
+//            processDownload(true);
+//        } else {
+//            processDownload();
+//        }
     } while (1);
     n--;
     log->message("Connection ended...", DEBUG);
