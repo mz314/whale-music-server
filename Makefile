@@ -21,7 +21,9 @@ install: all install_server
 	cd clientlib; make install
 
 
-server: server.o  user_manager.o  manager.o logs.o  user_state.o gstreamer_io.o xml.o playlist.o socketshtpp.o socketsabs.o responsexml.o httpFiles.o fileUtils.o database.o
+server: server.o  user_manager.o  manager.o logs.o  user_state.o gstreamer_io.o \
+	xml.o playlist.o socketshtpp.o socketsabs.o responsexml.o httpFiles.o \
+	HttpConnection.o HttpServer.o fileUtils.o database.o
 	g++ $^ `pkg-config --cflags --libs gstreamer-0.10` $(SERVER_LDFLAGS)  $(DB_LDFLAGS) -o $@
 
 fileUtils.o: src/fileUtils.cpp
@@ -89,6 +91,11 @@ socketshtpp.o: src/sockets_http.cpp
 	g++  `pkg-config --cflags --libs gstreamer-0.10` -o $@  $(CFLAGS)  -c $^
 
 
+HttpServer.o: src/HttpServer.cpp
+	g++  `pkg-config --cflags --libs gstreamer-0.10` -o $@  $(CFLAGS)  -c $^
+
+HttpConnection.o: src/HttpConnection.cpp
+	g++  `pkg-config --cflags --libs gstreamer-0.10` -o $@  $(CFLAGS)  -c $^
 #httptest.o: httptest.cpp 
 #	g++  -o $@  $(CFLAGS)  -c $^
 	
