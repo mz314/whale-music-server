@@ -165,6 +165,7 @@ Date: Mon, 28 Feb 2011 10:38:19 GMT\n\
 Content-Range: bytes 0-1024/1915873\n\
 Transfer-Encoding: chunked\n\
 Server: WhaleMusicDaemon\n\n";
+    
     //*DROP THIS boost::asio can do that just like iostream*/
     
 }
@@ -191,13 +192,13 @@ void connection_http::processDownload(bool chunked,string file_name) {
     char *bs;
     bs = file->readFile();
     string mime = file->getMime();
-    cout << "and here" << endl;
+    
     if (chunked) {
         sendChunkedResponse(bs, mime.c_str());
     } else {
-        cout << "send" << endl;
-        cout << strlen(bs) << endl;
-        //sendResponse(bs, mime.c_str());
+    
+        //cout << strlen(bs) << endl;
+        sendResponse(bs, mime.c_str());
         //cout << "response" << endl;
     }
 }
