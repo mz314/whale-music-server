@@ -1,6 +1,6 @@
 #include "server_manager.h"
 
-sockets_http * server_manager::server = 0;
+HttpServer * server_manager::server = 0;
 
 void server_manager::daemonize() {
     pid_t pid, sid;
@@ -32,7 +32,7 @@ bool server_manager::make_server(int port, bool daemon) {
     char port_str[128];
     sprintf(port_str, "Starting server at port: %i", port);
     log->message(port_str, INFO);
-    server = new sockets_http(port, log);
+    server = new HttpServer(port, log);
 
 }
 

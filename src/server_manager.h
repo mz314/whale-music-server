@@ -16,7 +16,8 @@
 
 
 // #include "sockets.h"
-#include "sockets_http.hpp"
+#include "HttpServer.hpp"
+#include "HttpConnection.hpp"
 #include "logs.h"
 
 using namespace std;
@@ -32,7 +33,7 @@ class server_manager
   bool make_server(int port,bool daemon);
   void msg();
   static void signalHandler(int sig);
-  static sockets_http *server;   
+  static HttpServer *server;   
   logs *log;
   
 };

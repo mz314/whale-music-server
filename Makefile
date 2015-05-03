@@ -22,7 +22,7 @@ install: all install_server
 
 
 server: server.o  user_manager.o  manager.o logs.o  user_state.o gstreamer_io.o \
-	xml.o playlist.o socketshtpp.o socketsabs.o responsexml.o httpFiles.o \
+	xml.o playlist.o  responsexml.o httpFiles.o \
 	HttpConnection.o HttpServer.o fileUtils.o database.o
 	g++ $^ `pkg-config --cflags --libs gstreamer-0.10` $(SERVER_LDFLAGS)  $(DB_LDFLAGS) -o $@
 
@@ -84,11 +84,6 @@ playlist.o: src/playlist.cpp
 	g++  -o $@  $(CFLAGS)  -c $^
 
 
-socketsabs.o: src/sockets_abstract.cpp
-	g++  `pkg-config --cflags --libs gstreamer-0.10` -o $@  $(CFLAGS)  -c $^
-	
-socketshtpp.o: src/sockets_http.cpp
-	g++  `pkg-config --cflags --libs gstreamer-0.10` -o $@  $(CFLAGS)  -c $^
 
 
 HttpServer.o: src/HttpServer.cpp

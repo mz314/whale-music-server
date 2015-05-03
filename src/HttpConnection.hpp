@@ -83,7 +83,7 @@ protected:
 public:
     static int n;
     ~HttpConnection();
-    HttpConnection(tcp::socket *socket, logs *log)
+    HttpConnection(tcp::socket *socket, logs *log) : socket(socket), log(log)
     {
 
     };
