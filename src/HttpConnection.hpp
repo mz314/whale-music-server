@@ -72,6 +72,7 @@ protected:
     void sendResponseString(const char *response);
     void sendResponseString(const stringstream & response);
     void replaceEntities(string &str);
+    static string makeFilePath(vector<string> url, int from, int to=-1);
     bool processRequest();
     clientReqData getRequest();
     void parseRequest(const clientReqData &req);

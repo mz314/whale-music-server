@@ -91,6 +91,7 @@ void HttpConnection::parseRequest(const clientReqData &req) {
     post = parseParams(poststr);
     this->url = url.substr(2, getpos - 2);
     boost::split(url_segments, url.erase(0,2), boost::is_any_of("/"));
+    
     log->message(this->url);
     request.clear();
     request.insert(get.begin(), get.end());
@@ -157,7 +158,7 @@ void HttpConnection::processDownload(bool chunked,string file_name) {
     try {
         file = new httpFile(file_name);
     } catch (string s) {
-        sendResponse("404", "text/plain", "404 Not found");
+        sendResponse(string(s+"not found ").c_str(), "text/plain", "404 Not found");
         //free(file);
         return;
     }
@@ -176,6 +177,26 @@ void HttpConnection::processDownload(bool chunked,string file_name) {
 //    }
 }
 
+string HttpConnection::makeFilePath(vector<string> url, int from, int to) {
+    string res;
+    if(to==-1) {
+        to=url.size();
+    }
+    n=0;
+    for(size_t i=from; i<to; i++) {
+        cout << url[i] << endl;
+        string new_url=url[i];
+        boost::replace_all(new_url, " ", "");
+        if (n>0) {
+            res+='/'+new_url;
+        } else {
+            res+=new_url;
+        }
+        n++;
+    }
+    return res;
+}
+
 bool HttpConnection::processRequest() {
     static user_manager *manager = user_manager::get_instance();
 
@@ -188,10 +209,11 @@ bool HttpConnection::processRequest() {
         resp.setJson(true);
     }
     string command = url_segments[0]; //request["command"];
-     log->message(">>"+string(command)+"<<", INFO);
+     log->message("Command is "+string(command)+"<<", INFO);
     if (command != " ") {
         if (command == "file") {
-            processDownload(false,url_segments[1]);
+            
+            processDownload(false,HttpConnection::makeFilePath(url_segments,1));
         } if (command == "test") {
             sendResponse(resp);
         } else if (command == "listdir") {

@@ -22,7 +22,9 @@ string httpFile::getMime() {
 }
 
 httpFile::httpFile(string fn) : fn(fn) , size(0) {
-    this->f = fopen(this->fn.c_str(), "rb");
+    string fnf=string(this->fn);
+    cout << "FN: " << fnf << endl;
+    this->f = fopen(fnf.c_str(), "rb");
     
     if (!this->f || fileUtils::isDir(fn)) {
         throw string(this->fn);
