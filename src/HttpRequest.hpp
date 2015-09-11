@@ -4,6 +4,7 @@
 #include <gtest/gtest.h>
 #include <string>
 #include <map>
+#include <boost/algorithm/string/replace.hpp>
 
 using namespace std;
 
