@@ -21,12 +21,17 @@ install: all install_server
 	cd clientlib; make install
 
 
+
 server: server.o  user_manager.o  manager.o logs.o  user_state.o gstreamer_io.o \
 	xml.o playlist.o  responsexml.o httpFiles.o \
 	HttpConnection.o HttpServer.o fileUtils.o database.o
 	g++ $^ `pkg-config --cflags --libs gstreamer-0.10` $(SERVER_LDFLAGS)  $(DB_LDFLAGS) -o $@
 
 fileUtils.o: src/fileUtils.cpp
+	g++  `pkg-config --cflags --libs gstreamer-0.10` -o $@  $(CFLAGS) -c $^
+
+
+HttpRequest.o: src/HttpRequest.cpp
 	g++  `pkg-config --cflags --libs gstreamer-0.10` -o $@  $(CFLAGS) -c $^
 
 httpFiles.o: src/httpFiles.cpp

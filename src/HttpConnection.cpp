@@ -40,21 +40,21 @@ void HttpConnection::parseRequest(const clientReqData &req) {
     string reqdata = req.data, first_line;
     //cout << req.data;
     replaceEntities(reqdata);
-    size_t rangepos=reqdata.find(HTTP_RANGE);
-    if(rangepos==string::npos) {
-        range.start=0;
-        range.end=0;
+    size_t rangepos = reqdata.find(HTTP_RANGE);
+    if (rangepos == string::npos) {
+        range.start = 0;
+        range.end = 0;
     } else {
-        size_t rnpos=reqdata.find("\n",rangepos);
-        string range_str=reqdata.substr(rangepos+strlen(HTTP_RANGE),rnpos-(rangepos+strlen(HTTP_RANGE)));
-        size_t seppos=range_str.find("-");
-        string start=range_str.substr(0,seppos);
-        string end=range_str.substr(seppos+1,strlen(range_str.c_str()));
-        
-        range.start=atoi(start.c_str());
-        range.end=atoi(end.c_str());
-        if (range.end==0) {
-            range.end=1024;
+        size_t rnpos = reqdata.find("\n", rangepos);
+        string range_str = reqdata.substr(rangepos + strlen(HTTP_RANGE), rnpos - (rangepos + strlen(HTTP_RANGE)));
+        size_t seppos = range_str.find("-");
+        string start = range_str.substr(0, seppos);
+        string end = range_str.substr(seppos + 1, strlen(range_str.c_str()));
+
+        range.start = atoi(start.c_str());
+        range.end = atoi(end.c_str());
+        if (range.end == 0) {
+            range.end = 1024;
         }
         cout << range.start << ", " << range.end << endl;
     }
@@ -121,15 +121,15 @@ Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS\n\
 Access-Control-Max-Age: 604800\n\
 Content-Type: %s; charset=utf-8\n\
 Content-Length: %i\n\n%s";
-    /*//Connection: close\n\*/
+    
     responseType resp;
-    //cout << format;
+
     sprintf(resp, format, status.c_str(), content_type, strlen(content), content);
+    
     sendResponseString(resp);
 }
 
 void HttpConnection::sendResponseString(const char *response) {
-    //log->message(response,DEBUG);
     boost::asio::write(*socket, boost::asio::buffer((void *) response, strlen(response) + 1));
 }
 
@@ -140,26 +140,22 @@ HttpConnection::~HttpConnection() {
 }
 
 void HttpConnection::sendChunkedResponse(const char *content, const char *content_type) {
-    char *format="HTTP/1.1 206 Partial Content\n\
+    char *format = "HTTP/1.1 206 Partial Content\n\
 Content-Type: %s\n\
 Date: Mon, 28 Feb 2011 10:38:19 GMT\n\
 Content-Range: bytes 0-1024/1915873\n\
 Transfer-Encoding: chunked\n\
 Server: WhaleMusicDaemon\n\n";
-    
-    //*DROP THIS boost::asio can do that just like iostream*/
-    
+
 }
 
-void HttpConnection::processDownload(bool chunked,string file_name) {
+void HttpConnection::processDownload(bool chunked, string file_name) {
 
-    //    log->message(ext);
-    
     string fn;
-    if (file_name!="") {
-        fn="/home/maciek/"+file_name;
+    if (file_name != "") {
+        fn = "/home/maciek/" + file_name;
     } else {
-        fn=this->url;
+        fn = this->url;
     }
     cout << fn << endl;
     try {
@@ -169,18 +165,15 @@ void HttpConnection::processDownload(bool chunked,string file_name) {
         //free(file);
         return;
     }
-    
+
     char *bs;
     bs = file->readFile();
     string mime = file->getMime();
-    
+
     if (chunked) {
         sendChunkedResponse(bs, mime.c_str());
     } else {
-    
-        //cout << strlen(bs) << endl;
         sendResponse(bs, mime.c_str());
-        //cout << "response" << endl;
     }
 }
 
@@ -217,11 +210,10 @@ bool HttpConnection::processRequest() {
             type=\"audio/mpeg3\" controls=\"controls\" autoplay=\"autoplay\" height=\"360\" width=\"640\"></audio>";
 
             sendResponse(stream_html, "text/html");
-        } 
-        else if (command == "stream_file") {
-            processDownload(false,request["file"]);
         }
-        else if (command == "playfile") {
+        else if (command == "stream_file") {
+            processDownload(false, request["file"]);
+        } else if (command == "playfile") {
             string file = request["file"];
             log->message("Request for playing file " + file);
             io = gstreamer_io::get_instance();
@@ -274,13 +266,10 @@ void HttpConnection::operator()() {
     n++;
     clientReqData req;
     do {
-
-        // cout << n << endl;
-
         req = this->getRequest();
         if (strlen(req.data) == 0)
             break;
-        //this->dumpRequest(req);
+        
         parseRequest(req);
         log->message(url);
 

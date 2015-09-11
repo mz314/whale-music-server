@@ -23,6 +23,7 @@
 #include "user_manager.h"
 #include "gstreamer_io.hpp"
 #include "xml.hpp"
+#include "HttpRequest.hpp"
 
 
 
@@ -53,7 +54,8 @@ struct clientReqData {
 using boost::thread;
 using namespace std;
 using boost::asio::ip::tcp;
-using namespace std;using boost::asio::ip::tcp;
+using namespace std;
+using boost::asio::ip::tcp;
 
 
 class HttpConnection {
